@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Monitoring System</title>
+    <style>
+        /* CSS Reset and Basic Setup */
+        :root {
+            --primary-blue: #3b82f6;
+            --dark-blue-bg: #1e293b;
+            --sidebar-bg: #0f172a;
+            --light-gray-bg: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-dark: #1e293b;
+            --text-light: #f8fafc;
+            --text-secondary: #64748b;
+            --status-resolved: #16a34a;
+            --status-progress: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            background-color: var(--light-gray-bg);
+            color: var(--text-dark);
+            display: flex;
+        }
+
+        /* Main App Layout */
+        .app-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--text-light);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .sidebar-logo {
+            background-color: var(--primary-blue);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+        
+        .sidebar-nav {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 16px;
+            text-decoration: none;
+            color: #94a3b8;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .nav-item a:hover {
+            background-color: #1e293b;
+            color: var(--text-light);
+        }
+
+        .nav-item a.active {
+            background-color: var(--primary-blue);
+            color: var(--text-light);
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex-grow: 1;
+            padding: 24px 48px;
+            overflow-y: auto;
+        }
+
+        .main-header {
+            background-color: var(--dark-blue-bg);
+            color: var(--text-light);
+            padding: 16px 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .main-header h1 {
+            font-size: 1.5rem;
+        }
+
+        /* Section and Card Styling */
+        section {
+            display: none; /* Hidden by default */
+        }
+
+        section.active {
+            display: block; /* Shown when active */
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--text-dark);
+        }
+        
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+            margin-top: 16px;
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #334155;
+        }
+
+        input[type="text"], select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input[type="text"]:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .input-with-button {
+            display: flex;
+            gap: 12px;
+        }
+        
+        button {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #2563eb;
+        }
+        
+        /* Table Styling */
+        .complaints-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        .complaints-table th, .complaints-table td {
+            text-align: left;
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .complaints-table thead {
+            background-color: #f1f5f9;
+        }
+        
+        .complaints-table th {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+        
+        .status {
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            display: inline-block;
+        }
+
+        .status-resolved {
+            background-color: #dcfce7;
+            color: var(--status-resolved);
+        }
+
+        .status-progress {
+            background-color: #fef9c3;
+            color: var(--status-progress);
+        }
+        
+        /* Utility */
+        #notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--status-resolved);
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateY(-20px);
+        }
+
+        #notification.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo"></div>
+                <span>Election Monitoring</span>
+            </div>
+            <nav>
+                <ul class="sidebar-nav">
+                    <li class="nav-item">
+                        <a href="#" onclick="showSection('dashboard', this)">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" onclick="showSection('report', this)">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                           <span>Report Issue</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" onclick="showSection('results', this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 2v6h6V2h-6zM15.5 2v6h6V2h-6zM2.5 15v6h6v-6h-6zM15.5 15v6h6v-6h-6z"></path></svg>
+                            <span>Transparency Hub</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" onclick="showSection('verify', this)">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                           <span>Voter Verification</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" onclick="showSection('track', this)" class="active">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"></path><path d="M16.5 12.55L8 18"></path><path d="M21.15 15.65c.95-1.31.25-3.15-1.5-3.15-1.25 0-2.35.7-2.65 1.75"></path></svg>
+                           <span>Track Complaints</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="main-header">
+                <h1>Election Monitoring System</h1>
+            </header>
+
+            <section id="track" class="active">
+                <h2 class="page-title">Track Complaints</h2>
+                <div class="card">
+                    <div class="input-with-button">
+                        <input type="text" id="trackId" placeholder="e.g. CMP-2024-0089">
+                        <button onclick="trackComplaint()">Track</button>
+                    </div>
+                     <p id="trackMsg" style="margin-top: 15px;"></p>
+                </div>
+                
+                <div class="card">
+                    <h3>Recently Submitted Issues</h3>
+                    <div id="complaints-container">
+                        <table class="complaints-table">
+                            <thead>
+                                <tr>
+                                    <th>Complaint ID</th>
+                                    <th>Role</th>
+                                    <th>Issue Type</th>
+                                    <th>Status</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody id="complaintsTableBody">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="dashboard">
+                <h2 class="page-title">Dashboard</h2>
+                <div class="card">
+                    <h3>Problems Identified:</h3>
+                    <ul>
+                        <li>Fraud or malpractice</li>
+                        <li>Misinformation / Fake news</li>
+                        <li>Lack of transparency</li>
+                        <li>Difficulty reporting issues</li>
+                        <li>Duplicate / fraudulent voters</li>
+                    </ul>
+                </div>
+                 <div class="card">
+                    <h3>Solutions This System Provides:</h3>
+                    <ul>
+                        <li>Centralized issue reporting & tracking</li>
+                        <li>Verified complaint IDs</li>
+                        <li>Live results & transparency hub</li>
+                        <li>Voter verification tool</li>
+                        <li>Digital reporting channels</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="report">
+                <h2 class="page-title">Report an Election Issue</h2>
+                <div class="card">
+                    <form id="issueForm">
+                        <div class="form-group">
+                            <label for="role">Your Role:</label>
+                            <select id="role" required>
+                                <option value="">Select a Role</option>
+                                <option>Citizen/Voter</option>
+                                <option>Observer</option>
+                                <option>Election Official</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="issueType">Issue Type:</label>
+                            <select id="issueType" required>
+                                <option value="">Select an Issue</option>
+                                <option>Fraud</option>
+                                <option>Misinformation</option>
+                                <option>Lack of Transparency</option>
+                                <option>Duplicate Voter</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="details">Details:</label>
+                            <textarea id="details" rows="4" required placeholder="Provide a detailed description of the issue..."></textarea>
+                        </div>
+                        <button type="submit">Submit Complaint</button>
+                    </form>
+                </div>
+            </section>
+            
+            <section id="results">
+                <h2 class="page-title">Transparency Hub – Live Results</h2>
+                <div class="card">
+                    <p><strong>Mock Data (for demonstration purposes)</strong></p>
+                    <ul>
+                        <li>Candidate A – 45%</li>
+                        <li>Candidate B – 40%</li>
+                        <li>Candidate C – 15%</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="verify">
+                <h2 class="page-title">Voter Verification</h2>
+                <div class="card">
+                    <div class="form-group">
+                        <label for="voterId">Enter Voter ID:</label>
+                        <input type="text" id="voterId" placeholder="Enter voter ID">
+                    </div>
+                    <button onclick="verifyVoter()">Verify</button>
+                    <p id="verifyMsg" style="margin-top: 15px;"></p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+    
+    <div id="notification"></div>
+
+    <script>
+        // --- DATA MANAGEMENT ---
+        function getComplaints() {
+            const complaints = localStorage.getItem('electionComplaints');
+            return complaints ? JSON.parse(complaints) : [];
+        }
+
+        function saveComplaints(complaints) {
+            localStorage.setItem('electionComplaints', JSON.stringify(complaints));
+        }
+
+        // --- UI & NAVIGATION ---
+        function showSection(id, element) {
+            // Hide all sections
+            document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+            
+            // Show the target section
+            document.getElementById(id).classList.add("active");
+
+            // Update active state in sidebar
+            document.querySelectorAll(".sidebar-nav a").forEach(a => a.classList.remove("active"));
+            if (element) {
+                element.classList.add("active");
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // --- COMPLAINTS LOGIC ---
+        function renderComplaintsTable() {
+            const complaints = getComplaints();
+            const tableBody = document.getElementById('complaintsTableBody');
+            tableBody.innerHTML = ''; // Clear existing table
+            
+            if (complaints.length === 0) {
+                 tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px;">No issues reported yet.</td></tr>';
+                 return;
+            }
+
+            complaints.forEach(c => {
+                const statusClass = c.status === 'Resolved' ? 'status-resolved' : 'status-progress';
+                const row = `
+                    <tr>
+                        <td>${c.id}</td>
+                        <td>${c.role}</td>
+                        <td>${c.issueType}</td>
+                        <td><span class="status ${statusClass}">${c.status}</span></td>
+                        <td>${c.details}</td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        document.getElementById("issueForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const complaints = getComplaints();
+            const newComplaint = {
+                id: "CMP-2024-" + String(Math.floor(Math.random() * 9000) + 1000),
+                role: document.getElementById('role').value,
+                issueType: document.getElementById('issueType').value,
+                details: document.getElementById('details').value,
+                status: "In Progress"
+            };
+
+            complaints.unshift(newComplaint); // Add to the beginning of the array
+            saveComplaints(complaints);
+            
+            showNotification(`Complaint ${newComplaint.id} submitted successfully!`);
+            this.reset();
+            renderComplaintsTable();
+            showSection('track', document.querySelector('a[onclick*="track"]')); // Switch to track view
+        });
+
+        function trackComplaint() {
+            const id = document.getElementById("trackId").value;
+            const complaints = getComplaints();
+            const complaint = complaints.find(c => c.id.toLowerCase() === id.toLowerCase());
+            const msgEl = document.getElementById("trackMsg");
+
+            if (complaint) {
+                msgEl.innerText = `Status for ${complaint.id}: ${complaint.status}. Details: ${complaint.details}`;
+            } else {
+                msgEl.innerText = "Complaint ID not found.";
+            }
+        }
+
+        // --- VOTER VERIFICATION ---
+        function verifyVoter() {
+            let voterId = document.getElementById("voterId").value;
+            let msgEl = document.getElementById("verifyMsg");
+            if (!voterId) {
+                msgEl.innerText = "Please enter a valid ID.";
+            } else if (voterId === "12345") {
+                msgEl.innerText = "Duplicate voter detected!";
+            } else {
+                msgEl.innerText = "Voter verified successfully.";
+            }
+        }
+        
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add some mock data if local storage is empty
+            if (getComplaints().length === 0) {
+                 const mockData = [
+                    { id: 'CMP-2024-0088', role: 'Observer', issueType: 'Misinformation', status: 'In Progress', details: 'Fake news spreading on social media about polling times.' },
+                    { id: 'CMP-2024-7789', role: 'Citizen/Voter', issueType: 'Fraud', status: 'Resolved', details: 'Polling official was not checking IDs properly.' },
+                 ];
+                 saveComplaints(mockData);
+            }
+            // Initial render
+            renderComplaintsTable();
+            showSection('track', document.querySelector('a[onclick*="track"]'));
+        });
+    </script>
+</body>
+</html>
