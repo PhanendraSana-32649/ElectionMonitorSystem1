@@ -246,3 +246,24 @@ button:hover { background-color: #2563eb; }
     .input-with-button { flex-direction: row; }
     .page-title { font-size: 1.75rem; }
 }
+/* Logo Styling */
+.sidebar-logo, .header-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-logo img, .header-logo {
+    display: block;
+}
+
+.sidebar-logo {
+    width: 50px;
+    height: 50px;
+}
+
+.header-logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
