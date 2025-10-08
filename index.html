@@ -8,6 +8,60 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#3b82f6">
     <link rel="icon" href="icons/icon-192.png" sizes="192x192">
+    <style>
+        /* Logo Styling */
+        .sidebar-logo, .header-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #3b82f6;
+            color: white;
+            font-weight: bold;
+            font-size: 1.25rem;
+            border-radius: 8px;
+        }
+
+        .sidebar-logo {
+            width: 50px;
+            height: 50px;
+        }
+
+        .header-logo {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        /* Sidebar header adjustments */
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #f8fafc;
+        }
+
+        /* Main header logo */
+        .main-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #1e293b;
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .main-header h1 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.25rem;
+        }
+    </style>
 </head>
 <body>
 
@@ -16,7 +70,10 @@
     <div class="app-container">
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <div class="sidebar-logo"></div>
+                <!-- Sidebar Logo -->
+                <div class="sidebar-logo">
+                    EMS
+                </div>
                 <span>Election Monitoring</span>
             </div>
             <nav>
@@ -52,10 +109,15 @@
 
         <main class="main-content">
             <header class="main-header">
-                <h1>Election Monitoring System</h1>
+                <h1>
+                    <!-- Header Logo -->
+                    <div class="header-logo">EMS</div>
+                    Election Monitoring System
+                </h1>
                 <button class="menu-toggle" id="menu-toggle">&#9776;</button>
             </header>
 
+            <!-- Sections remain unchanged -->
             <section id="track" class="active">
                 <h2 class="page-title">Track Complaints</h2>
                 <div class="card">
