@@ -3,758 +3,193 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#FF9933">
-  <meta name="description" content="EMS - Election Monitoring System for Free and Fair Elections">
-  <link rel="manifest" id="manifest-placeholder">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='192' viewBox='0 0 192 192'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23FF9933'/%3E%3Cstop offset='0.5' stop-color='%23FFFFFF'/%3E%3Cstop offset='1' stop-color='%23138808'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='192' height='192' fill='url(%23g)'/%3E%3Ccircle cx='96' cy='96' r='40' fill='%23000080' opacity='0.2'/%3E%3Ctext x='96' y='110' font-size='48' fill='%23000080' text-anchor='middle' font-weight='bold'%3EEMS%3C/text%3E%3C/svg%3E">
   <title>EMS - Election Monitoring System</title>
+  <meta name="theme-color" content="#FF9933">
+  <meta name="description" content="Election Monitoring System for Free and Fair Elections">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * {margin:0; padding:0; box-sizing:border-box;}
     :root {
-      --saffron: #FF9933;
-      --white: #FFFFFF;
-      --green: #138808;
-      --navy-blue: #000080;
-      --light-saffron: #FFB366;
-      --dark-green: #0D5E06;
-      --text-dark: #2c3e50;
-      --text-light: #6c757d;
-      --shadow: 0 4px 15px rgba(0,0,0,0.1);
-      --shadow-lg: 0 10px 40px rgba(0,0,0,0.15);
+      --saffron:#FF9933; --white:#fff; --green:#138808; --navy:#000080;
+      --light-saffron:#FFB366; --dark-green:#0D5E06; --shadow:0 4px 15px rgba(0,0,0,0.1);
     }
-
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: linear-gradient(135deg, #fff5e6 0%, #e8f5e9 100%);
-      color: var(--text-dark);
-      line-height: 1.6;
-      min-height: 100vh;
+      font-family:'Segoe UI',sans-serif; background:linear-gradient(135deg,#fff5e6,#e8f5e9);
+      color:#2c3e50; line-height:1.6; min-height:100vh; overflow-x:hidden;
     }
-
     header {
-      background: linear-gradient(180deg, var(--saffron) 0%, var(--saffron) 33%, var(--white) 33%, var(--white) 66%, var(--green) 66%, var(--green) 100%);
-      padding: 2rem 1rem;
-      text-align: center;
-      box-shadow: var(--shadow-lg);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      background:linear-gradient(180deg,var(--saffron) 0%,var(--white) 50%,var(--green) 100%);
+      padding:1rem; text-align:center; position:sticky; top:0; z-index:10; box-shadow:var(--shadow);
     }
-
-    .header-content {
-      background: rgba(0, 0, 128, 0.95);
-      padding: 1.5rem;
-      border-radius: 15px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .logo-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .logo {
-      width: 70px;
-      height: 70px;
-      background: linear-gradient(135deg, var(--saffron) 0%, var(--white) 50%, var(--green) 100%);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: var(--navy-blue);
-      box-shadow: 0 4px 15px rgba(255,153,51,0.4);
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-
-    header h1 {
-      font-size: clamp(1.8rem, 5vw, 2.8rem);
-      font-weight: 700;
-      color: white;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-      margin-bottom: 0.3rem;
-    }
-
-    header p {
-      font-size: clamp(0.9rem, 2vw, 1.1rem);
-      color: white;
-      opacity: 0.95;
-      margin-top: 0.5rem;
-    }
-
-    .tagline {
-      font-style: italic;
-      color: var(--light-saffron);
-      font-size: 0.9rem;
-      margin-top: 0.5rem;
-    }
-
-    .auth-screen {
-      min-height: calc(100vh - 250px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem 1rem;
-    }
-
-    .auth-card {
-      background: white;
-      padding: 2.5rem;
-      border-radius: 20px;
-      box-shadow: var(--shadow-lg);
-      max-width: 450px;
-      width: 100%;
-      border-top: 6px solid var(--saffron);
-      border-bottom: 6px solid var(--green);
-    }
-
-    .auth-logo {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .auth-logo-circle {
-      width: 100px;
-      height: 100px;
-      margin: 0 auto 1rem;
-      background: linear-gradient(135deg, var(--saffron) 0%, var(--white) 50%, var(--green) 100%);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3rem;
-      box-shadow: 0 8px 25px rgba(255,153,51,0.3);
-    }
-
-    .auth-card h2 {
-      color: var(--navy-blue);
-      margin-bottom: 0.5rem;
-      text-align: center;
-      font-size: 1.8rem;
-      font-weight: 700;
-    }
-
-    .auth-card p {
-      text-align: center;
-      color: var(--text-light);
-      margin-bottom: 2rem;
-    }
-
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-
-    label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: var(--text-dark);
-      font-size: 0.95rem;
-    }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 0.875rem 1rem;
-      border: 2px solid #e0e0e0;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-family: inherit;
-      transition: all 0.3s;
-      background: white;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      outline: none;
-      border-color: var(--saffron);
-      box-shadow: 0 0 0 3px rgba(255,153,51,0.1);
-    }
-
-    .phone-input-group {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .phone-prefix {
-      flex: 0 0 70px;
-      background: linear-gradient(135deg, var(--saffron), var(--light-saffron));
-      color: white;
-      padding: 0.875rem;
-      border-radius: 10px;
-      text-align: center;
-      font-weight: 700;
-      font-size: 1.1rem;
-      box-shadow: 0 4px 10px rgba(255,153,51,0.3);
-    }
-
-    button {
-      width: 100%;
-      background: linear-gradient(135deg, var(--saffron) 0%, #ff6b35 100%);
-      color: white;
-      padding: 1rem;
-      border: none;
-      border-radius: 10px;
-      font-size: 1.05rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 4px 15px rgba(255,153,51,0.4);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    button:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(255,153,51,0.5);
-    }
-
-    button:active:not(:disabled) {
-      transform: translateY(0);
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .btn-secondary {
-      background: linear-gradient(135deg, var(--green) 0%, var(--dark-green) 100%);
-      margin-top: 0.75rem;
-      box-shadow: 0 4px 15px rgba(19,136,8,0.4);
-    }
-
-    .btn-outline {
-      background: white;
-      color: var(--navy-blue);
-      border: 2px solid var(--navy-blue);
-      box-shadow: none;
-    }
-
-    .btn-outline:hover:not(:disabled) {
-      background: var(--navy-blue);
-      color: white;
-    }
-
-    .timer {
-      text-align: center;
-      margin: 1rem 0;
-      padding: 0.75rem;
-      background: linear-gradient(135deg, #fff5e6 0%, #ffe6cc 100%);
-      border-radius: 8px;
-      color: var(--text-dark);
-      font-weight: 600;
-      border-left: 4px solid var(--saffron);
-    }
-
-    .timer.warning {
-      background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
-      border-left-color: #f44336;
-      color: #d32f2f;
-      animation: shake 0.5s;
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
-
+    header .title {background:rgba(0,0,128,.95); color:white; border-radius:15px; padding:1rem;}
+    header h1 {font-size:clamp(1.5rem,4vw,2.5rem);}
+    .tagline {font-size:0.9rem; color:var(--light-saffron);}
+    .auth-screen,.main-app{display:flex; justify-content:center; align-items:center; flex-direction:column; padding:2rem;}
+    .auth-card {background:white; padding:2rem; border-radius:20px; box-shadow:var(--shadow); max-width:400px; width:100%;}
+    input,select,textarea{width:100%; padding:.75rem; border:2px solid #e0e0e0; border-radius:8px; font-size:1rem;}
+    input:focus,select:focus,textarea:focus{border-color:var(--saffron); outline:none;}
+    button {width:100%; padding:1rem; border:none; border-radius:8px; color:white; font-weight:bold; font-size:1rem;
+      background:linear-gradient(135deg,var(--saffron),#ff6b35); cursor:pointer; margin-top:1rem;}
+    button:hover{opacity:0.9;}
+    .hidden{display:none;}
     nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: white;
-      display: flex;
-      justify-content: space-around;
-      box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
-      z-index: 99;
-      padding: 0.5rem 0;
-      border-top: 3px solid;
-      border-image: linear-gradient(90deg, var(--saffron), var(--white), var(--green)) 1;
+      position:fixed; bottom:0; left:0; right:0; background:white;
+      display:flex; justify-content:space-around; border-top:3px solid var(--saffron);
+      box-shadow:0 -4px 10px rgba(0,0,0,0.1); z-index:5;
     }
-
-    nav a {
-      flex: 1;
-      text-align: center;
-      padding: 0.5rem;
-      text-decoration: none;
-      color: var(--text-light);
-      font-size: 0.75rem;
-      transition: all 0.3s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.25rem;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    nav a:before {
-      content: attr(data-icon);
-      font-size: 1.5rem;
-    }
-
-    nav a.active {
-      color: var(--saffron);
-      transform: translateY(-2px);
-    }
-
-    section {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 1rem 1rem 90px;
-      display: none;
-    }
-
-    section.active {
-      display: block;
-      animation: fadeIn 0.4s;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .card {
-      background: white;
-      padding: 1.5rem;
-      margin: 1rem 0;
-      border-radius: 15px;
-      box-shadow: var(--shadow);
-      border-left: 4px solid var(--saffron);
-    }
-
-    h2 {
-      color: var(--navy-blue);
-      margin-bottom: 1rem;
-      font-size: 1.6rem;
-      font-weight: 700;
-    }
-
-    .user-info {
-      background: linear-gradient(135deg, var(--saffron) 0%, var(--light-saffron) 100%);
-      color: white;
-      padding: 2rem;
-      border-radius: 15px;
-      margin-bottom: 1rem;
-      box-shadow: var(--shadow-lg);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .user-info:before {
-      content: '🇮🇳';
-      position: absolute;
-      right: -20px;
-      top: -20px;
-      font-size: 120px;
-      opacity: 0.1;
-    }
-
-    .user-info h3 {
-      margin-bottom: 0.5rem;
-      font-size: 1.5rem;
-    }
-
-    .user-info p {
-      opacity: 0.95;
-      margin: 0.25rem 0;
-      font-size: 1rem;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 1rem;
-      margin: 1.5rem 0;
-    }
-
-    .stat-card {
-      background: linear-gradient(135deg, var(--saffron) 0%, var(--light-saffron) 100%);
-      color: white;
-      padding: 1.5rem;
-      border-radius: 15px;
-      text-align: center;
-      box-shadow: var(--shadow);
-      transition: transform 0.3s;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-5px);
-    }
-
-    .stat-card:nth-child(2) {
-      background: linear-gradient(135deg, var(--green) 0%, var(--dark-green) 100%);
-    }
-
-    .stat-card:nth-child(3) {
-      background: linear-gradient(135deg, var(--navy-blue) 0%, #000060 100%);
-    }
-
-    .stat-card h3 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-      font-weight: 700;
-    }
-
-    .complaint-item {
-      background: linear-gradient(135deg, #fff5e6 0%, #ffffff 100%);
-      padding: 1.25rem;
-      margin: 1rem 0;
-      border-radius: 12px;
-      border-left: 5px solid var(--saffron);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-      transition: transform 0.3s;
-    }
-
-    .complaint-item:hover {
-      transform: translateX(5px);
-    }
-
-    .complaint-item strong {
-      display: block;
-      margin-bottom: 0.5rem;
-      color: var(--navy-blue);
-      font-size: 1rem;
-    }
-
-    .status-badge {
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      margin-left: 0.5rem;
-      text-transform: uppercase;
-    }
-
-    .status-pending { background: #fff3cd; color: #856404; }
-    .status-under-review { background: #cce5ff; color: #004085; }
-    .status-resolved { background: #d4edda; color: #155724; }
-    .status-rejected { background: #f8d7da; color: #721c24; }
-
-    .notification {
-      position: fixed;
-      top: 120px;
-      right: 1rem;
-      left: 1rem;
-      max-width: 500px;
-      margin: 0 auto;
-      background: linear-gradient(135deg, var(--green) 0%, var(--dark-green) 100%);
-      color: white;
-      padding: 1.25rem 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-      display: none;
-      z-index: 1000;
-      animation: slideDown 0.4s;
-      font-weight: 600;
-    }
-
-    .notification.error {
-      background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
-    }
-
-    @keyframes slideDown {
-      from { transform: translateY(-100px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    .loading {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255,255,255,.3);
-      border-radius: 50%;
-      border-top-color: white;
-      animation: spin 0.8s ease-in-out infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
-
-    .feature-list {
-      list-style: none;
-      padding: 0;
-    }
-
-    .feature-list li {
-      padding: 0.75rem;
-      margin: 0.5rem 0;
-      background: linear-gradient(135deg, #fff5e6 0%, #ffffff 100%);
-      border-radius: 8px;
-      border-left: 3px solid var(--saffron);
-      font-weight: 500;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .logout-btn {
-      background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
-      box-shadow: 0 4px 15px rgba(244,67,54,0.4);
-    }
-
-    @media (min-width: 768px) {
-      section {
-        padding-bottom: 2rem;
-      }
-
-      nav {
-        position: static;
-        background: linear-gradient(90deg, var(--saffron) 0%, var(--white) 50%, var(--green) 100%);
-        padding: 0;
-        border: none;
-      }
-
-      nav a {
-        flex: none;
-        padding: 1.25rem 2rem;
-        color: var(--navy-blue);
-        font-size: 1rem;
-        flex-direction: row;
-        gap: 0.5rem;
-        font-weight: 700;
-      }
-
-      nav a:hover {
-        background: rgba(255,255,255,0.3);
-      }
-
-      nav a.active {
-        background: rgba(255,153,51,0.3);
-        color: var(--navy-blue);
-        transform: none;
-      }
+    nav a{flex:1; text-align:center; text-decoration:none; color:#555; font-weight:600; padding:.75rem 0;}
+    nav a.active{color:var(--saffron);}
+    section{display:none; padding:2rem 1rem 90px; width:100%; max-width:800px;}
+    section.active{display:block; animation:fadeIn .4s;}
+    @keyframes fadeIn{from{opacity:0; transform:translateY(20px);}to{opacity:1; transform:translateY(0);}}
+    @media(min-width:768px){
+      nav{position:static; border:none; box-shadow:none; justify-content:center;}
+      nav a{padding:1rem 2rem;}
+      section{padding-bottom:2rem;}
     }
   </style>
 </head>
 <body>
-  <div class="app-container">
-    <header>
-      <div class="header-content">
-        <div class="logo-container">
-          <div class="logo">EMS</div>
-          <div>
-            <h1>Election Monitoring System</h1>
-            <div class="tagline">Truth, Transparency, Trust</div>
-          </div>
-        </div>
-        <p>Ensuring Free, Fair and Transparent Elections</p>
-      </div>
-    </header>
-
-    <!-- Auth Screen -->
-    <div id="authScreen" class="auth-screen">
-      <div class="auth-card">
-        <div class="auth-logo">
-          <div class="auth-logo-circle">🔐</div>
-          <h2 id="authTitle">Secure Login</h2>
-          <p>Verify your identity with OTP</p>
-        </div>
-        
-        <!-- Phone Form -->
-        <form id="phoneForm">
-          <div class="form-group">
-            <label for="phoneNumber">📱 Mobile Number</label>
-            <div class="phone-input-group">
-              <div class="phone-prefix">+91</div>
-              <input type="tel" id="phoneNumber" placeholder="9876543210" maxlength="10" pattern="[6-9][0-9]{9}" required>
-            </div>
-            <small style="color: var(--text-light); margin-top: 0.5rem; display: block;">OTP will be sent to this number</small>
-          </div>
-          <button type="submit" id="sendOtpBtn">
-            <span>📨 Send OTP</span>
-          </button>
-        </form>
-
-        <!-- OTP Form -->
-        <form id="otpForm" class="hidden">
-          <div class="form-group">
-            <label for="otp">🔐 Enter 6-Digit OTP</label>
-            <input type="text" id="otp" placeholder="000000" maxlength="6" pattern="[0-9]{6}" required autocomplete="off">
-          </div>
-          <div class="timer" id="otpTimer"></div>
-          
-          <div class="form-group">
-            <label for="userName">👤 Full Name</label>
-            <input type="text" id="userName" placeholder="Enter your full name" required>
-          </div>
-
-          <div class="form-group">
-            <label for="userRole">🎭 Your Role</label>
-            <select id="userRole" required>
-              <option value="Citizen/Voter">🙋 Citizen/Voter</option>
-              <option value="Observer">👁️ Observer</option>
-              <option value="Election Official">⚖️ Election Official</option>
-              <option value="Media">📰 Media</option>
-            </select>
-          </div>
-
-          <button type="submit" id="verifyOtpBtn">
-            <span>✅ Verify & Login</span>
-          </button>
-          <button type="button" class="btn-secondary" id="resendOtpBtn">🔄 Resend OTP</button>
-          <button type="button" class="btn-outline" onclick="resetAuth()">◀️ Change Number</button>
-        </form>
-      </div>
+  <header>
+    <div class="title">
+      <h1>Election Monitoring System</h1>
+      <div class="tagline">Truth • Transparency • Trust</div>
     </div>
+  </header>
 
-    <!-- Main App -->
-    <div id="mainApp" class="hidden">
-      <nav>
-        <a data-icon="📊" onclick="showSection('dashboard')" class="active" id="navDashboard">Dashboard</a>
-        <a data-icon="📝" onclick="showSection('report')" id="navReport">Report</a>
-        <a data-icon="📈" onclick="showSection('results')" id="navResults">Results</a>
-        <a data-icon="✓" onclick="showSection('verify')" id="navVerify">Verify</a>
-        <a data-icon="🔍" onclick="showSection('track')" id="navTrack">Track</a>
-      </nav>
+  <!-- Auth Screen -->
+  <div id="authScreen" class="auth-screen">
+    <div class="auth-card">
+      <h2>🔐 Secure Login</h2>
+      <p>Verify with OTP</p>
+      <form id="phoneForm">
+        <label>Mobile Number</label>
+        <div style="display:flex; gap:.5rem;">
+          <div style="background:var(--saffron); color:white; padding:.75rem; border-radius:8px;">+91</div>
+          <input type="tel" id="phoneNumber" maxlength="10" pattern="[6-9][0-9]{9}" required placeholder="9876543210">
+        </div>
+        <button type="submit">📨 Send OTP</button>
+      </form>
 
-      <div class="main-content">
-        <!-- Dashboard -->
-        <section id="dashboard" class="active">
-          <div class="user-info">
-            <h3 id="userNameDisplay">Welcome, User!</h3>
-            <p id="userPhoneDisplay">📱 +91 XXXXXXXXXX</p>
-            <p id="userRoleDisplay">👤 Role: Citizen/Voter</p>
-          </div>
+      <form id="otpForm" class="hidden">
+        <label>Enter OTP</label>
+        <input type="text" id="otp" maxlength="6" required placeholder="000000">
+        <label>Full Name</label>
+        <input type="text" id="userName" required placeholder="Your Name">
+        <label>Your Role</label>
+        <select id="userRole" required>
+          <option value="">Select Role</option>
+          <option>Citizen/Voter</option>
+          <option>Observer</option>
+          <option>Election Official</option>
+          <option>Media</option>
+        </select>
+        <button type="submit">✅ Verify & Login</button>
+        <button type="button" id="resendOtpBtn" style="background:var(--green);">🔄 Resend OTP</button>
+      </form>
+    </div>
+  </div>
 
-          <div class="card">
-            <h2>📊 Your Dashboard</h2>
-            <div class="stats-grid">
-              <div class="stat-card">
-                <h3 id="totalComplaints">0</h3>
-                <p>Total Reports</p>
-              </div>
-              <div class="stat-card">
-                <h3 id="pendingComplaints">0</h3>
-                <p>Pending</p>
-              </div>
-              <div class="stat-card">
-                <h3 id="resolvedComplaints">0</h3>
-                <p>Resolved</p>
-              </div>
-            </div>
-            
-            <h3 style="margin-top: 2rem; color: var(--navy-blue);">🎯 Our Mission</h3>
-            <ul class="feature-list">
-              <li>🚫 Combat electoral fraud and malpractice</li>
-              <li>📢 Transparent complaint tracking system</li>
-              <li>🔐 Secure voter verification</li>
-              <li>⚡ Real-time issue reporting</li>
-              <li>🇮🇳 Strengthening democracy</li>
-            </ul>
+  <!-- Main App -->
+  <div id="mainApp" class="main-app hidden">
+    <nav>
+      <a href="#" data-section="dashboard" class="active">📊 Dashboard</a>
+      <a href="#" data-section="report">📝 Report</a>
+      <a href="#" data-section="results">📈 Results</a>
+      <a href="#" data-section="verify">✅ Verify</a>
+      <a href="#" data-section="track">🔍 Track</a>
+    </nav>
 
-            <button class="logout-btn" onclick="logout()">🚪 Logout</button>
-          </div>
-        </section>
+    <section id="dashboard" class="active">
+      <h2>Welcome to Dashboard</h2>
+      <p id="userDisplay"></p>
+      <p>📢 Transparency in every vote.</p>
+      <button onclick="logout()">🚪 Logout</button>
+    </section>
 
-        <!-- Report -->
-        <section id="report">
-          <div class="card">
-            <h2>📝 Report Electoral Issue</h2>
-            <p style="color: var(--text-light); margin-bottom: 1.5rem;">Help us ensure free and fair elections</p>
-            
-            <form id="complaintForm">
-              <div class="form-group">
-                <label for="issueType">⚠️ Issue Type</label>
-                <select id="issueType" required>
-                  <option value="">Select issue type</option>
-                  <option>Fraud or Malpractice</option>
-                  <option>Misinformation / Fake News</option>
-                  <option>Lack of Transparency</option>
-                  <option>Duplicate/Invalid Voters</option>
-                  <option>Intimidation or Coercion</option>
-                  <option>Technical Issues</option>
-                  <option>Other</option>
-                </select>
-              </div>
+    <section id="report">
+      <h2>📝 Report Issue</h2>
+      <form id="complaintForm">
+        <label>Issue Type</label>
+        <select required>
+          <option value="">Select issue</option>
+          <option>Fraud</option>
+          <option>Misinformation</option>
+          <option>Technical Issue</option>
+        </select>
+        <label>Details</label>
+        <textarea required></textarea>
+        <button type="submit">🚀 Submit</button>
+      </form>
+    </section>
 
-              <div class="form-group">
-                <label for="location">📍 Location (Optional)</label>
-                <input type="text" id="location" placeholder="Polling station or area name">
-              </div>
+    <section id="results">
+      <h2>📈 Live Results</h2>
+      <p>Demo Data - Transparent Reporting</p>
+    </section>
 
-              <div class="form-group">
-                <label for="details">📄 Detailed Description</label>
-                <textarea id="details" required placeholder="Please provide detailed information..."></textarea>
-              </div>
+    <section id="verify">
+      <h2>✅ Verification Center</h2>
+      <p>Check report authenticity and status.</p>
+    </section>
 
-              <button type="submit" id="submitComplaintBtn">
-                <span>🚀 Submit Report</span>
-              </button>
-            </form>
-          </div>
-        </section>
+    <section id="track">
+      <h2>🔍 Track Complaints</h2>
+      <p>Track all your registered complaints easily.</p>
+    </section>
+  </div>
 
-        <!-- Results -->
-        <section id="results">
-          <div class="card">
-            <h2>📈 Live Election Results</h2>
-            <p style="color: var(--text-light); margin-bottom: 1.5rem;">Real-time transparent data (Demo)</p>
-            
-            <div style="margin: 1.5rem 0;">
-              <div style="background: linear-gradient(135deg, #fff5e6 0%, #ffffff 100%); padding: 1rem; border-radius: 10px; margin: 1rem 0; border-left: 5px solid var(--saffron);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                  <strong style="color: var(--navy-blue);">Candidate A</strong>
-                  <strong style="color: var(--saffron); font-size: 1.2rem;">45%</strong>
-                </div>
-                <div style="background: #e0e0e0; height: 25px; border-radius: 12px; overflow: hidden;">
-                  <div style="background: linear-gradient(90deg, var(--saffron), var(--light-saffron)); height: 100%; width: 45%;"></div>
-                </div>
-              </div>
+  <script>
+    const phoneForm=document.getElementById('phoneForm');
+    const otpForm=document.getElementById('otpForm');
+    const mainApp=document.getElementById('mainApp');
+    const authScreen=document.getElementById('authScreen');
+    const otpInput=document.getElementById('otp');
+    let generatedOtp="";
 
-              <div style="background: linear-gradient(135deg, #fff5e6 0%, #ffffff 100%); padding: 1rem; border-radius: 10px; margin: 1rem 0; border-left: 5px solid var(--green);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                  <strong style="color: var(--navy-blue);">Candidate B</strong>
-                  <strong style="color: var(--green); font-size: 1.2rem;">40%</strong>
-                </div>
-                <div style="background: #e0e0e0; height: 25px; border-radius: 12px; overflow: hidden;">
-                  <div style="background: linear-gradient(90deg, var(--green), var(--dark-green)); height: 100%; width: 40%;"></div>
-                </div>
-              </div>
+    phoneForm.addEventListener('submit',e=>{
+      e.preventDefault();
+      const phone=document.getElementById('phoneNumber').value.trim();
+      if(!/^[6-9]\d{9}$/.test(phone)){alert("Enter valid phone number");return;}
+      generatedOtp=Math.floor(100000+Math.random()*900000).toString();
+      alert("Demo OTP: "+generatedOtp); // simulate OTP sent
+      phoneForm.classList.add('hidden');
+      otpForm.classList.remove('hidden');
+    });
 
-              <div style="background: linear-gradient(135deg, #fff5e6 0%, #ffffff 100%); padding: 1rem; border-radius: 10px; margin: 1rem 0; border-left: 5px solid var(--navy-blue);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                  <strong style="color: var(--navy-blue);">Candidate C</strong>
-                  <strong style="color: var(--navy-blue); font-size: 1.2rem;">15%</strong>
-                </div>
-                <div style="background: #e0e0e0; height: 25px; border-radius: 12px; overflow: hidden;">
-                  <div style="background: linear-gradient(90deg, var(--navy-blue), #000060); height: 100%; width: 15%;"></div>
-                </div>
-              </div>
-            </div>
+    otpForm.addEventListener('submit',e=>{
+      e.preventDefault();
+      if(otpInput.value!==generatedOtp){alert("Invalid OTP!");return;}
+      const name=document.getElementById('userName').value;
+      const role=document.getElementById('userRole').value;
+      if(!name||!role){alert("Enter all details");return;}
+      document.getElementById('userDisplay').textContent=`👋 ${name} (${role})`;
+      authScreen.classList.add('hidden');
+      mainApp.classList.remove('hidden');
+    });
 
-            <div style="margin-top: 2rem; padding: 1rem; background: linear-gradient(135deg, #e8f5e9 0%, #ffffff 100%); border-radius: 10px; border-left: 4px solid var(--green);">
-              <strong style="color: var(--green);">🔒 Data Integrity:</strong> All results are cryptographically verified
-            </div>
-          </div>
-        </section>
+    document.getElementById('resendOtpBtn').addEventListener('click',()=>{
+      generatedOtp=Math.floor(100000+Math.random()*900000).toString();
+      alert("New OTP: "+generatedOtp);
+    });
 
-        <!-- Verify -->
-        <section
+    function logout(){
+      mainApp.classList.add('hidden');
+      authScreen.classList.remove('hidden');
+      otpForm.classList.add('hidden');
+      phoneForm.classList.remove('hidden');
+    }
+
+    // Navigation system
+    document.querySelectorAll('nav a').forEach(link=>{
+      link.addEventListener('click',e=>{
+        e.preventDefault();
+        const sectionId=link.dataset.section;
+        document.querySelectorAll('nav a').forEach(l=>l.classList.remove('active'));
+        link.classList.add('active');
+        document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+        document.getElementById(sectionId).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
