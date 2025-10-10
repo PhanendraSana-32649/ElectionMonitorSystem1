@@ -3,9 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EMS - Election Monitoring System</title>
+  <title>Election Monitoring System</title>
+
+  <!-- ✅ PWA Configuration -->
+  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#FF9933">
-  <meta name="description" content="Election Monitoring System for Free and Fair Elections">
+  <meta name="description" content="Transparent and Secure Election Monitoring System">
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("service-worker.js")
+          .then(() => console.log("✅ Service Worker Registered"))
+          .catch(err => console.error("❌ SW Registration Failed:", err));
+      });
+    }
+  </script>
+
   <style>
     * {margin:0; padding:0; box-sizing:border-box;}
     :root {
@@ -13,12 +28,21 @@
       --light-saffron:#FFB366; --dark-green:#0D5E06; --shadow:0 4px 15px rgba(0,0,0,0.1);
     }
     body {
-      font-family:'Segoe UI',sans-serif; background:linear-gradient(135deg,#fff5e6,#e8f5e9);
-      color:#2c3e50; line-height:1.6; min-height:100vh; overflow-x:hidden;
+      font-family:'Segoe UI',sans-serif;
+      background:linear-gradient(135deg,#fff5e6,#e8f5e9);
+      color:#2c3e50;
+      line-height:1.6;
+      min-height:100vh;
+      overflow-x:hidden;
     }
     header {
       background:linear-gradient(180deg,var(--saffron) 0%,var(--white) 50%,var(--green) 100%);
-      padding:1rem; text-align:center; position:sticky; top:0; z-index:10; box-shadow:var(--shadow);
+      padding:1rem;
+      text-align:center;
+      position:sticky;
+      top:0;
+      z-index:10;
+      box-shadow:var(--shadow);
     }
     header .title {background:rgba(0,0,128,.95); color:white; border-radius:15px; padding:1rem;}
     header h1 {font-size:clamp(1.5rem,4vw,2.5rem);}
@@ -151,7 +175,7 @@
       const phone=document.getElementById('phoneNumber').value.trim();
       if(!/^[6-9]\d{9}$/.test(phone)){alert("Enter valid phone number");return;}
       generatedOtp=Math.floor(100000+Math.random()*900000).toString();
-      alert("Demo OTP: "+generatedOtp); // simulate OTP sent
+      alert("Demo OTP: "+generatedOtp);
       phoneForm.classList.add('hidden');
       otpForm.classList.remove('hidden');
     });
@@ -179,7 +203,7 @@
       phoneForm.classList.remove('hidden');
     }
 
-    // Navigation system
+    // Navigation
     document.querySelectorAll('nav a').forEach(link=>{
       link.addEventListener('click',e=>{
         e.preventDefault();
